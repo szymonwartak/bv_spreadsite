@@ -1,0 +1,38 @@
+<lift:surround with="default" at="content">
+  <head>
+    <style>
+    .chartHeader { width:800px; }
+    .chartHeaderLeft { float:left; }
+    .chartHeaderRight { float:right; }
+    .chartHeaderRight div { float:right; width:120px; margin-top:10px; }    
+    </style>
+    <script type="text/javascript"><![CDATA[
+    $(document).ready(function() {
+    	$("#refreshChartButton").submit();
+    });
+    ]]></script>
+  </head>
+
+  <lift:MarketSpread.orderBlocks>
+  <div class="column span-23 last" style="text-align: middle">
+    <div class="chartHeader">
+      <div class="chartHeaderLeft">
+        <chart:rangeCombo />
+        <chart:submit chartId="graphSpace" />
+      </div>
+      <div class="chartHeaderRight">
+        <div>
+          Price: <chart:currency/><span id="barPrice">0</span>
+        </div>
+        <div>
+          Quantity: <span id="barQuantity">0</span>kg
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column span-23 last" style="text-align: middle">
+  	<chart:chart/>
+  </div>
+  </lift:MarketSpread.orderBlocks>
+</lift:surround>
+

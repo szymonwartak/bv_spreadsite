@@ -1,0 +1,2 @@
+Main-Class: net.mutina.bv.Scraper
+Class-Path: scala-library.jar

@@ -1,0 +1,73 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:lift="http://liftweb.net/">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+	
+    <title>Szamoan</title>
+    <lift:CSS.blueprint />
+    <lift:CSS.fancyType />
+    <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+    <style>
+  /* <![CDATA[ */
+
+/* menu styles */
+ul.menuSection { list-style-type: none; height: 0px; }
+ul.menuSection li {
+  float: left;
+  height:24px;
+  padding: 5px 10px;
+  background-repeat: none;
+}
+li.selectedItem { float:left; background-image:url('/images/menubgover.gif'); }
+li.selectedItem { font: 16px bold Arial; }
+li.menuItem { background-image:url('/images/menubg.gif'); }
+li.menuItem:hover { cursor: pointer; }
+ul.menuSection li a { font: 16px bold Arial; text-decoration: none; color:#fff; display: block; }
+ul.menuSection li a:hover { color:#000; }
+.handCursor { cursor: pointer; }
+
+  /* ]]> */
+  </style>
+  <script type="text/javascript"><![CDATA[
+  $(document).ready(function() {
+	  $("li.menuItem").click(function() {
+		  window.location=$(this).find("a").attr("href");
+		  return false;
+	  });
+  });
+  ]]></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="column span-23 last" style="text-align: middle">
+        <h1 class="alt">BV++</h1>
+      </div>
+
+      <hr/>
+
+      <div class="column span-23">
+	      <lift:Menu.builder ul:class="menuSection" li:class="menuItem"
+	          li_item:id="selectedMenu" li_item:class="selectedItem" li_path:class="parentMenu"/>
+      </div>
+
+      <div class="column span-23 last">
+        <div>
+          <lift:snippet type="msgs"/>
+          <hr class="space" />
+        </div>
+        <lift:bind name="content" />
+      </div>
+
+      <hr />
+      <div class="column span-23 last" style="text-align: center">
+        <h4 class="alt">
+          <a href="http://liftweb.net">
+            <i>lift</i>
+          </a> is Copyright 2007 WorldWide Conferencing, LLC.  Distributed under an Apache 2.0 License.</h4>
+      </div>
+
+    </div>
+  </body>
+</html>
