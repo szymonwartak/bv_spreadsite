@@ -38,7 +38,6 @@ function showBarData(x,y) {
 				if(barHoverData[xOffset][i2] != null && barHoverData[xOffset][i2].y > (y-barHeight/2) && barHoverData[xOffset][i2].y < (y+barHeight/2)) {
 					$("#barPrice").html(barHoverData[xOffset][i2].price);
 					$("#barQuantity").html(barHoverData[xOffset][i2].quantity);
-					//alert(barHoverData[xOffset][i2].price+" "+barHoverData[xOffset][i2].date);
 					break;
 				}
 			}

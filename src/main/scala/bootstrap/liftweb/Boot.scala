@@ -19,15 +19,10 @@ class Boot {
                         
     LiftRules.addToPackages("net.mutina.bv")     
     LiftRules.early.append { _.setCharacterEncoding("UTF-8") }
-    
-//    LiftRules.addTemplateBefore(User.templates)
 
     // Build SiteMap
-//    val entries = Menu(Loc("Home", "/", "Home")) :: User.sitemap
-//    LiftRules.setSiteMap(SiteMap(entries:_*))
     LiftRules.setSiteMap(SiteMap(MenuInfo.menu :_*))
     LiftRules.ajaxPostTimeout = 15000
-//    S.addAround(User.requestLoans)
     
     // this has to go after the menu defs which fail otherwise (though this should work!)
     if (!DB.jndiJdbcConnAvailable_?) DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
@@ -54,8 +49,6 @@ object DBVendor extends ConnectionManager {
     try {
 //      Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
 //      val dm = DriverManager.getConnection("jdbc:derby:lift_example;create=true")
-//      Class.forName("org.postgresql.Driver")
-//      val dm = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mutina","bvapp","bvapplskdjf")
       Class.forName("org.h2.Driver")
       val dm = DriverManager.getConnection("jdbc:h2:tcp://localhost:9092/~/db/bv","bvapp","bvapplskdjf")
       Full(dm)
