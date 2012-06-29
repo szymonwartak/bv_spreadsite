@@ -18,6 +18,7 @@ import net.liftweb.json.JsonAST._
 
 import org.scala_tools.time.Imports._
 import org.scala_tools.time.Implicits._
+import net.mutina.bv.Scraper
 
 class MarketSpread {
 	object Currencies extends Enumeration {
@@ -40,17 +41,17 @@ class MarketSpread {
 		
 	def getOrderBlocks : String = {
 		println("getting blocks")
-		val obs = OrderBlock.getOrderBlockRange(DateTime.now.minusMinutes(90).toDate, DateTime.now.toDate)
-		println("num blocks:"+obs.size)
+		import Scraper.scrapers
+		val obs = scrapers("GBP")("AGXLN")
+		println("num blocks:"+obs.marketData)
 		val buffer = new scala.collection.mutable.ListBuffer[JValue]
-		obs.foreach(ob=>buffer+=("orderBlock" -> 
+		obs.marketData.foreach(ob=>buffer+=("orderBlock" ->
     		("blockDate" -> ob.blockDate.is.getTime) ~
     		("sellOrBuy" -> ob.sellOrBuy.is) ~
     		("quantity" -> ob.quantity.is) ~
     		("price" -> ob.price.is) ~
     		("closePrice" -> ob.closePrice.is)
     ))
-    
 		val json = buffer.toList
 	    compact(render(JArray(json)))
 	}

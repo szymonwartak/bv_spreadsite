@@ -49,13 +49,21 @@
 	        <configuration>
 	        <scalaVersion>${scala.version}</scalaVersion>       
 	        </configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>compile</goal>
+								<goal>testCompile</goal>
+							</goals>
+						</execution>
+					</executions>
 	    </plugin>     
 	    <plugin>
 	      <groupId>org.mortbay.jetty</groupId>
 	      <artifactId>maven-jetty-plugin</artifactId>
 	      <configuration>
 	        <contextPath>/</contextPath>
-<!-- 	        <scanIntervalSeconds>5</scanIntervalSeconds> -->
+ 	        <!--<scanIntervalSeconds>2</scanIntervalSeconds>-->
 	      </configuration>
 	    </plugin>
 	    <plugin>
@@ -225,6 +233,19 @@
       <name>Scala-Tools Maven2 Repository</name>
       <url>http://scala-tools.org/repo-releases</url>
     </pluginRepository>
-  </pluginRepositories>  
- 
+  </pluginRepositories>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.class</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

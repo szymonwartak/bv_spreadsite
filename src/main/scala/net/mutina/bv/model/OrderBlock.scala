@@ -27,8 +27,8 @@ object OrderBlock extends OrderBlock with LongKeyedMetaMapper[OrderBlock] {
 	override def dbTableName = "order_block"
 	override def fieldOrder = List(blockDate, sellOrBuy, security, quantity, currency, price, highPrice, lowPrice, closePrice)
 	
-	def getOrderBlockRange(startDate:Date, endDate:Date) : List[OrderBlock] = {
-		OrderBlock.findAll(BySql("blockDate between ? and ?", IHaveValidatedThisSQL("szymon","2012-02-11"), 
+	def getOrderBlockRange(aCurrency:String, aSecurity:String, startDate:Date, endDate:Date) : List[OrderBlock] = {
+		OrderBlock.findAll(BySql("blockDate between ? and ?", IHaveValidatedThisSQL("szymon","2012-06-11"),
 				startDate, endDate))
 	}
 }

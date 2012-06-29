@@ -8,9 +8,9 @@ create table order_block (
 	quantity decimal, 
 	currency varchar2(10), 
 	price integer,
-  highPrice decimal, 
-  lowPrice decimal, 
-  closePrice decimal 
+	highPrice decimal, 
+	lowPrice decimal, 
+	closePrice decimal 
 );
 
 grant select, insert, update, delete on order_block to bvapp;
