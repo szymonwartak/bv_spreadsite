@@ -43,7 +43,6 @@ class MarketSpread {
 		println("getting blocks")
 		import Scraper.scrapers
 		val obs = scrapers("GBP")("AGXLN")
-		println("num blocks:"+obs.marketData)
 		val buffer = new scala.collection.mutable.ListBuffer[JValue]
 		obs.marketData.foreach(ob=>buffer+=("orderBlock" ->
     		("blockDate" -> ob.blockDate.is.getTime) ~

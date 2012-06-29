@@ -37,11 +37,8 @@ object Scraper extends Logging {
 	def go() = {
 		def addAndStartScraper(marketPair: Pair[String,String]) = {
 			val scraper = new Scraper(marketPair._1, marketPair._2);
-//			println("before init: "+scraper.marketData.size)
-//			val existingBlocks = OrderBlock.getOrderBlockRange(marketPair._1, marketPair._2, DateTime.now.minusMinutes(90).toDate, DateTime.now.toDate)
-//			println("post query: "+existingBlocks.size)
-//			existingBlocks.foreach(block => scraper.marketData.enqueue(block))
-//			println("after init: "+scraper.marketData.size)
+			val existingBlocks = OrderBlock.getOrderBlockRange(marketPair._1, marketPair._2, DateTime.now.minusMinutes(90).toDate, DateTime.now.toDate)
+			scraper.marketData = existingBlocks ::: scraper.marketData
 			scrapers += marketPair._1->Map(marketPair._2->scraper);
 			scraper.start();
 		}
@@ -58,7 +55,7 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 	val pricesUrl = "http://www.galmarley.com/prices/CHART_BAR_HLC/" + security.substring(0,3) + "/" + currency + "/5/Update"
 
 	// var with immutable collection so we don't need to manage queue thread safety
-	var marketData = Queue[OrderBlock]()
+	var marketData = List[OrderBlock]()
 	val marketUrl = "http://www.bullionvault.com/view_market_depth.do?considerationCurrency=" + currency + "&securityId="+security+"&marketWidth=8&priceInterval=1"
 
 	def act() {
@@ -149,7 +146,7 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 		}
 		// add new block and iterate to get rid of values older than the threshold (assumes blocks are enqueued in ascending date order)
 //		println(scrapeTime+" "+map("quantity").toDouble+" "+map("limit").toDouble.toInt+" "+currentPrices("close"))
-		marketData = marketData.dropWhile(_.blockDate.get.before(DateTime.now.minusHours(2).toDate)).enqueue(block)
+		marketData = block :: marketData.dropWhile(_.blockDate.get.before(DateTime.now.minusHours(2).toDate))
 	}
 
 	def parseHttpParams(url: String): HashMap[String, String] = {
