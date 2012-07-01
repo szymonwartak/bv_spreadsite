@@ -50,7 +50,7 @@ object DBVendor extends ConnectionManager {
 //      Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
 //      val dm = DriverManager.getConnection("jdbc:derby:lift_example;create=true")
       Class.forName("org.h2.Driver")
-      val dm = DriverManager.getConnection("jdbc:h2:tcp://localhost:9092/~/db/bv","bvapp","bvapplskdjf")
+      val dm = DriverManager.getConnection("jdbc:h2:tcp://localhost:9092/~/db/bv;LOCK_TIMEOUT=10000","bvapp","bvapplskdjf")
       Full(dm)
     } catch {
       case e : Exception => e.printStackTrace; Empty

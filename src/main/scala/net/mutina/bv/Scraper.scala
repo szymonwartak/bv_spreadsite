@@ -30,16 +30,19 @@ import concurrent.ops._
 object Scraper extends Logging {
 	if (!DB.jndiJdbcConnAvailable_?) DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
 	Schemifier.schemify(true, Log.neverF _, OrderBlock)
-	val markets = List("GBP"->"AGXLN")
+	val markets = List("GBP"->"AGXLN", "USD"->"AGXLN", "EUR"->"AGXLN")
 	var scrapers = Map[String,Map[String,Scraper]]()
 	var started = false
+	var numThreads = 0
 
 	def go() = {
 		def addAndStartScraper(marketPair: Pair[String,String]) = {
 			val scraper = new Scraper(marketPair._1, marketPair._2);
-			val existingBlocks = OrderBlock.getOrderBlockRange(marketPair._1, marketPair._2, DateTime.now.minusMinutes(90).toDate, DateTime.now.toDate)
+			val existingBlocks = OrderBlock.getOrderBlockRange(marketPair._1, marketPair._2, DateTime.now.minusMinutes(120).toDate, DateTime.now.toDate)
+			debug("read order blocks: "+marketPair._1+"->"+marketPair._2+" ="+existingBlocks.size)
 			scraper.marketData = existingBlocks ::: scraper.marketData
 			scrapers += marketPair._1->Map(marketPair._2->scraper);
+			numThreads += 1
 			scraper.start();
 		}
 		this.synchronized {
@@ -51,21 +54,22 @@ object Scraper extends Logging {
 }
 
 class Scraper(currency:String, security:String) extends Actor with Logging {
-	var currentPrices = Map[String, Double]()
 	val pricesUrl = "http://www.galmarley.com/prices/CHART_BAR_HLC/" + security.substring(0,3) + "/" + currency + "/5/Update"
-
-	// var with immutable collection so we don't need to manage queue thread safety
-	var marketData = List[OrderBlock]()
 	val marketUrl = "http://www.bullionvault.com/view_market_depth.do?considerationCurrency=" + currency + "&securityId="+security+"&marketWidth=8&priceInterval=1"
+
+	var currentPrices = Map[String, Double]()
+	var marketData = List[OrderBlock]()
 
 	def act() {
 		while (true) {
 			scrapeSpotPrices(pricesUrl)
 			scrapeMarketDepth(marketUrl)
-//			println("added block. Size:"+marketData.size)
+			marketData = marketData.filter(_.blockDate.get.after(DateTime.now.minusMinutes(120).toDate))
+			debug("now sleep. marketData size: "+marketData.size+" numThreads: "+Scraper.numThreads)
 			Thread.sleep(20000)
 		}
 	}
+	override def getLogBase() = currency+"->"+security
 
 	def readUrl(url: String): String = {
 		val (received, body) = request(url)
@@ -82,6 +86,7 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 		val (received, body) = request(url)
 		if (received) {
 			val xml = XML.load(body)
+			body.close()
 			var count = 0;
 			var lowTotal = 0.0;
 			var highTotal = 0.0;
@@ -100,7 +105,6 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 			}
 			currentPrices = Map("low" -> (lowTotal / count), "high" -> (highTotal / count), "close" -> (closeTotal / count))
 		}
-//		println("spot: "+currentPrices("low")+" "+currentPrices("high")+" "+currentPrices("close"))
 		return received
 	}
 
@@ -109,12 +113,18 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 		val (received, body) = request(url)
 
 		if (received) {
-			val input = new BufferedReader(new InputStreamReader(body))
-			var in = "A"
+//			val input = new BufferedReader(new InputStreamReader(body))
+//			var in = "A"
+//			var doc = ""
+//			while (in != null) {
+//				in = input.readLine()
+//				doc += in
+//			}
+//			body.close();
 			var doc = ""
-			while (in != null) {
-				in = input.readLine()
-				doc += in
+			val input = new BufferedReader(new InputStreamReader(body))
+			Stream.continually(input.readLine()).takeWhile(_ ne null) foreach {
+				line => doc += line
 			}
 			body.close();
 			var blocknum = 0
@@ -130,7 +140,6 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 
 	def parseBlock(scrapeTime: Date, blockStr: String) {
 		val map = parseHttpParams(blockStr)
-		log.debug(map("actionIndicator") + map("securityId") + map("quantity") + map("considerationCurrency") + map("limit"))
 		var block = OrderBlock.create
 			.currency(map("considerationCurrency"))
 			.blockDate(scrapeTime)
@@ -141,12 +150,9 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 			.highPrice(currentPrices("high"))
 			.lowPrice(currentPrices("low"))
 			.closePrice(currentPrices("close"))
-		spawn {
-			block.save
-		}
+		block.save
 		// add new block and iterate to get rid of values older than the threshold (assumes blocks are enqueued in ascending date order)
-//		println(scrapeTime+" "+map("quantity").toDouble+" "+map("limit").toDouble.toInt+" "+currentPrices("close"))
-		marketData = block :: marketData.dropWhile(_.blockDate.get.before(DateTime.now.minusHours(2).toDate))
+		marketData = block :: marketData
 	}
 
 	def parseHttpParams(url: String): HashMap[String, String] = {
@@ -158,14 +164,6 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 			}
 		}
 		params
-	}
-
-	def outputHLC(xml: Elem) {
-		println(xml \ "message" \ "bars" \ "bar".toString())
-		xml \\ "bar" foreach {
-			(bar) =>
-				println((bar \ "low").text.trim())
-		}
 	}
 
 	def request(urlString: String): (Boolean, InputStream) =

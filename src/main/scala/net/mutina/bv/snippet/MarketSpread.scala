@@ -23,9 +23,9 @@ import net.mutina.bv.Scraper
 class MarketSpread {
 	object Currencies extends Enumeration {
 	  type Currencies = Value
-	  val Pound = Value("£")
-	  val Euro = Value("€")
-	  val Dollar = Value("$")
+	  val Pound = Value("GBP")
+	  val Euro = Value("EUR")
+	  val Dollar = Value("USD")
 	}
 	var currentValue = Currencies.Pound // starting value
 	implicit val formats = net.liftweb.json.DefaultFormats
@@ -40,9 +40,8 @@ class MarketSpread {
 	def restTimestamp (ob : OrderBlock) : String = timestamp.format(ob.blockDate.is)
 		
 	def getOrderBlocks : String = {
-		println("getting blocks")
 		import Scraper.scrapers
-		val obs = scrapers("GBP")("AGXLN")
+		val obs = scrapers(graphCurrency.toString())("AGXLN")
 		val buffer = new scala.collection.mutable.ListBuffer[JValue]
 		obs.marketData.foreach(ob=>buffer+=("orderBlock" ->
     		("blockDate" -> ob.blockDate.is.getTime) ~
@@ -56,7 +55,6 @@ class MarketSpread {
 	}
 	
 	def updateData : JsCmd = {
-		println("gc:"+graphCurrency)
 	  Run("updateData('"+getOrderBlocks+"','"+theChart+"')")
 	}
 	def updateGraphCurrency(newCurrency : String) : JsCmd = {
