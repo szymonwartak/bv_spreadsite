@@ -1,0 +1,231 @@
+The BullionVault XML API
+
+Abstract
+
+There are two interfaces into the BullionVault system: The normal GUI interface for users and an XML interface for trading robots. While the XML interface is not considered a primary BullionVault service, it can be used to greatly simplify the development of trading robots.
+This document describes the XML interface, giving a bot writer sufficient information to get started. It is not a comprehensive guide, nor does it give any information on trading strategies.
+
+Audience
+
+This document is aimed at programmers. In particularly, the reader should be familiar with CGI and the HTTP request/response protocol as well as XML file formats.
+
+Disclaimer
+
+The XML interface is supplied as is, with no warranty or support. BullionVault itself uses the interface, and for this reason has a vested interest in its accuracy and stability, however BullionVault makes no guarantees of the stability of the interface or the accuracy of the information it provides.
+
+Trading involves risk of financial loss. Automated trading involves many additional risks including accuracy of information, reliability of connections, speed of system response, etc. By using the XML API you accept all risks involved, including, but not limited to financial loss for any reason.
+
+BullionVault reserves the right to charge or suspend clients whose robots use excessive system resources. Please poll the system within sensible limits.
+
+Updates
+
+Updates to the XML API and other technical announcements are posted in the technical section of our news site. Users of the XML API should subscribe to the RSS feed to stay informed.
+
+Overview
+
+The BullionVault API operates in a similar fashion to the normal GUI site. CGI parameters are submitted and a response is sent back from the server. The key difference is that the response is XML rather than HTML. As such, it should be relatively easy for a skilled programmer to interface with the system and trade by wire. All the GUI pages which are necessary for trading (e.g. the market viewer) have XML equivalents. Most auxilliary pages not necessary for trading (e.g. statements and account settings) have no XML equivalent and must be used manually.
+
+Security
+
+BullionVault uses an enhanced login protocol comprising of a normal username & password login together with an optional (but recommended) memorable information check. Any sensitive or valuable communications will be performed over this secure connection. Publically available information, such as viewing the market, can be accessed using an unsecured HTTP connection. Please note that our webservers use a session cookie to track your login session (JSESSIONID). Your robot must treat cookies in a similar fashion to a normal browser, or your login will be continually forgotten.
+
+On first requesting a secure page using an HTTPS client, the user or bot is temporarily diverted to a username/password screen at:
+
+https://live.bullionvault.com/secure/login.do
+This screen's CGI parameters j_username j_password to be submitted to:
+
+https://live.bullionvault.com/secure/j_security_check?j_username=XXX&j_password=YYY
+On success, the user is then either logged in or will be shown the memorable information check page if this security enhancement is enabled..
+There is no XML equivalent of the memorable information check page. To simplify processing of this check, the bot can inspect a META tag in the html head section of the challenge, which appears as follows:
+
+<meta name="X-Challenge" CONTENT="0,2,5"/>
+Three characters must be correctly submitted to the server. The CONTENT attribute gives the position of these characters, zero-indexed. Thus in the example above the bot must submit the first, third and sixth memorable information characters as response[0], response[1] and response[2].
+For example, if the memorable information is 'ABCDEFGHI' the correct submission will be:
+https://live.bullionvault.com/secure/second_login.do?response[0]=A&response[1]=C&response[2]=F
+After successfully logging in the user can now access secure pages.
+
+XML API requests
+
+The XML API currently provides 6 services:
+
+View the market
+Place an order
+Cancel an order
+View balance
+View orders
+View single order
+The interface for these is described below.
+View market
+
+URL: http://live.bullionvault.com/view_market_xml.do
+CGI Parameter	Description	Example
+considerationCurrency	The currency to view. May be one of USD, GBP, EUR or blank for all.	considerationCurrency=USD
+securityId	The vault to view. May be one of AUXLN (London), AUXZU (Zurich), AUXNY (New York) or blank for all.	securityId=AUXLN
+quantity	The minimum quantity to show. A value of 0.005 will filter out all bids/offers smaller than 5 grams. Use 0.001 to show all bids/offers.	quantity=0.001
+marketWidth	The maximum number of bids and offers returned for each market. The default value is 1.	marketWidth=3
+Sample response:
+
+	<envelope>
+		<message type="MARKET_DEPTH_A" version="0.1">
+			<market>
+				<pitches>
+					<pitch securityId="AUXLN" considerationCurrency="USD">
+						<buyPrices>
+							<price actionIndicator="B" quantity="0.1" limit="12510"/>
+							<price actionIndicator="B" quantity="0.2" limit="12500"/>
+							<price actionIndicator="B" quantity="0.1" limit="12490"/>
+						</buyPrices>
+						<sellPrices>
+							<price actionIndicator="S" quantity="0.2" limit="12590"/>
+							<price actionIndicator="S" quantity="0.1" limit="12600"/>
+							<price actionIndicator="S" quantity="0.1" limit="12610"/>
+						</sellPrices>
+					</pitch>
+				</pitches>
+			</market>
+		</message>
+	</envelope>
+	
+Cancel order
+
+URL: https://live.bullionvault.com/secure/cancel_order_xml.do
+CGI Parameter	Description	Example
+orderId	The order ID returned by place_order.	orderId=12345
+confirmed	For bots, this value must always be true.	confirmed=true
+Place order
+
+URL: https://live.bullionvault.com/secure/place_order_xml.do
+CGI Parameter	Description	Example
+actionIndicator	One of B or S for buy (gold with currency) or sell (gold for currency).	actionIndicator=S
+considerationCurrency	The currency to trade. Must be one of USD, GBP, EUR.	considerationCurrency=USD
+securityId	The vault to trade. May be one of AUXLN (London), AUXZU (Zurich), AUXNY (New York).	securityId=AUXZU
+quantity	The quantity to trade, in kilos. 1.234 represents 1 kilo, 234 grams. Must have no more than 3 decimal places.	quantity=1.234
+limit	The limit price for the bid or offer, as an integer.	limit=13437
+typeCode	One of TIL_CANCEL (Good until cancelled), TIL_TIME (Good until time), IMMEDIATE (Execute immediate) or FILL_KILL (Fill or kill).	typeCode=TIL_TIME
+clientTransRef	Your reference code. Must be unique for this account.	clientTransRef=ABC12345
+confirmed	For bots, this value must always be true.	confirmed=true
+goodUntil	Must be blank unless the typeCode is TIL_TIME, in which case it must be a timestamp in the format '2005-01-15 12:34:56+0000'.	goodUntil=2005-06-02+02%3A58%2B0100
+Sample response:
+
+	<envelope>
+		<message type="PLACE_ORDER_A" version="0.1">
+			<order orderId="1080" clientTransRef="asdf" actionIndicator="B" securityId="AUXLN"
+				considerationCurrency="USD" quantity="0.001" quantityMatched="0.001"
+				totalConsideration="12.59" totalCommission="0.11" limit="13500" typeCode="TIL_CANCEL"
+				orderTime="2005-06-02 14:14:24 UTC" goodUntil="" lastModified="2005-06-02 14:14:25 UTC"
+				statusCode="DONE"/>
+		</message>
+	</envelope>
+	
+View balance
+
+URL: https://live.bullionvault.com/secure/view_balance_xml.do
+CGI Parameter	Description	Example
+n/a	n/a	n/a
+Sample response:
+
+	<envelope>
+		<message type="CLIENT_BALANCE_A" version="0.1">
+			<clientBalance>
+				<clientPositions>
+					<clientPosition securityId="AUXLN" available="3.026" total="3.026"
+						classNarrative="GOLD" totalValuation="40578.66" valuationCurrency="USD"/>
+					<clientPosition securityId="AUXNY" available="5" total="5"
+						classNarrative="GOLD" totalValuation="67050" valuationCurrency="USD"/>
+					<clientPosition securityId="AUXZU" available="3.983" total="3.983"
+						classNarrative="GOLD" totalValuation="53412.03" valuationCurrency="USD"/>
+					<clientPosition securityId="EUR" available="39983" total="39983"
+						classNarrative="CURRENCY" totalValuation="49059.15" valuationCurrency="USD"/>
+					<clientPosition securityId="GBP" available="24799.04" total="24799.04"
+						classNarrative="CURRENCY" totalValuation="45084.66" valuationCurrency="USD"/>
+					<clientPosition securityId="USD" available="49954.9" total="49954.9"
+						classNarrative="CURRENCY" totalValuation="49954.9" valuationCurrency="USD"/>
+				</clientPositions>
+			</clientBalance>
+		</message>
+	</envelope>
+	
+View orders
+
+URL: https://live.bullionvault.com/secure/view_orders_xml.do
+CGI Parameter	Description	Example
+securityId	The vault to view. May be one of AUXLN (London), AUXZU (Zurich), AUXNY (New York) or blank for all.	securityId=AUXNY
+considerationCurrency	The currency to view. May be one of USD, GBP, EUR or blank for all.	considerationCurrency=USD
+status	Filters the list of orders returned. One of OPEN (show all open orders), DEALT (show all orders that have dealt), OPEN_DEALT (open + dealt orders), CLOSED (orders that are now closed), REJECTED (orders that were rejected) or blank for all. It is strongly recommended that bot writers use only the OPEN status, as it is specially optimized for bot use. Other orders should be viewed with the view_single_order message.	status=OPEN
+page	The response to view orders is paginated, starting at page zero. Use this parameter to select the page.	page=0
+Sample response:
+
+	<envelope>
+		<message type="ORDERS_A" version="0.4" page="0" pageSize="20">
+			<orders clientId="******">
+				<order orderId="1080" clientTransRef="asdf" actionIndicator="B"
+					securityId="AUXLN" considerationCurrency="USD" quantity="0.001" quantityMatched="0.001"
+					totalConsideration="12.59" totalCommission="0.11" limit="13500" typeCode="TIL_CANCEL"
+						orderTime="2005-06-02 14:14:24 UTC" goodUntil="" lastModified="2005-06-02 14:14:25 UTC"
+						statusCode="DONE"/>
+				<order orderId="1061" clientTransRef="050520115557474" actionIndicator="B"
+					securityId="AUXNY" considerationCurrency="USD" quantity="0.002" quantityMatched="0.002"
+					totalConsideration="26.8" totalCommission="0" limit="13400" typeCode="TIL_CANCEL"
+						orderTime="2005-05-20 15:59:33 UTC" goodUntil="" lastModified="2005-05-20 15:59:45 UTC"
+						statusCode="DONE"/>
+				<order orderId="1041" clientTransRef="050520120214131" actionIndicator="B"
+					securityId="AUXNY" considerationCurrency="USD" quantity="0.002" quantityMatched="0.002"
+					totalConsideration="27" totalCommission="0" limit="13500" typeCode="TIL_CANCEL"
+						orderTime="2005-05-20 12:02:16 UTC" goodUntil="" lastModified="2005-05-20 12:02:17 UTC"
+						statusCode="DONE"/>
+				<order orderId="1000" clientTransRef="abc123" actionIndicator="B"
+					securityId="AUXLN" considerationCurrency="GBP" quantity="0.1" quantityMatched="0.025"
+					totalConsideration="182.5" totalCommission="1.46" limit="7300" typeCode="TIL_CANCEL"
+						orderTime="2005-05-19 09:21:21 UTC" goodUntil="" lastModified="2005-05-19 09:21:21 UTC"
+						statusCode="CANCELLED"/>
+			</orders>
+		</message>
+	</envelope>
+	
+View single order
+
+URL: https://live.bullionvault.com/secure/view_single_order_xml.do
+CGI Parameter	Description	Example
+orderId	The order ID returned by the place_order response.	orderId=1207516
+Sample response:
+
+	<envelope>
+		<message type="SINGLE_ORDER_A" version="0.1">
+			<order orderId="1080" clientTransRef="asdf" actionIndicator="B" securityId="AUXLN" considerationCurrency="USD"
+				quantity="0.001" quantityMatched="0.001" totalConsideration="12.59" totalCommission="0.11" limit="13500"
+				typeCode="TIL_CANCEL" orderTime="2005-06-02 14:14:24 UTC" goodUntil="" lastModified="2005-06-02 14:14:25 UTC"
+				statusCode="DONE"/>
+		</message>
+	</envelope>
+	
+Additional notes
+
+The statusCode field for order responses has one of the follow values:
+
+Value	Description.
+OPEN	Order is open.
+DONE	Order has closed.
+EXPIRED	Order closed by expiring.
+CANCELLED	Order was cancelled.
+KILLED	Order was killed because it could not be filled.
+NOFUNDS	Order was rejected due to insufficient funds.
+BADLIMIT	Order was rejected due to limit too high/low.
+SILVER_RESTRICTED	This account may not trade silver.
+QUEUED	Order is queued awaiting processing.
+Frequently Asked Questions
+
+Q. Where can I find more information?
+A. Your best source of information is to trace the client GUI. The XML API and the client GUI are functionally the same - the real difference is how the data is presented.
+If you use Firefox you may find Firebug helpful in tracing the flow of information.
+
+Q. Can you add feature X?
+A. Possibly, though development of the XML API is not a current priority. Please email any suggestions to xmlapi@BullionVault.com.
+
+Q. How current is the XML data?
+A. As current as the GUI data. They are both generated from the same source. Only the presentation differs.
+
+Q. Is there a public test server available?
+A. No, but if there is sufficient demand we would consider it. Please email any suggestions to xmlapi@BullionVault.com.
+
+
+© BullionVault.com 2011 - Buy gold online at live gold prices.
