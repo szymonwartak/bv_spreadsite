@@ -23,11 +23,6 @@ class Boot {
     // Build SiteMap
     LiftRules.setSiteMap(SiteMap(MenuInfo.menu :_*))
     LiftRules.ajaxPostTimeout = 15000
-    
-    // this has to go after the menu defs which fail otherwise (though this should work!)
-    if (!DB.jndiJdbcConnAvailable_?) DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
-    Schemifier.schemify(true, Log.infoF _, 
-    		User, OrderBlock)
   }
 }
 
@@ -43,19 +38,3 @@ object MenuInfo {
                Menu.i("Market Spread") / "marketSpread")// >> IfLoggedIn)::: 
                //User.sitemap.slice(0,2)
 }
-
-object DBVendor extends ConnectionManager {
-  def newConnection(name: ConnectionIdentifier): Box[Connection] = {
-    try {
-//      Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
-//      val dm = DriverManager.getConnection("jdbc:derby:lift_example;create=true")
-      Class.forName("org.h2.Driver")
-      val dm = DriverManager.getConnection("jdbc:h2:tcp://localhost:9092/~/db/bv;LOCK_TIMEOUT=10000","bvapp","bvapplskdjf")
-      Full(dm)
-    } catch {
-      case e : Exception => e.printStackTrace; Empty
-    }
-  }
-  def releaseConnection(conn: Connection) {conn.close}
-}
-

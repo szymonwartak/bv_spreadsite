@@ -1,4 +1,12 @@
 /bin/**
 /target/**
 /.project
+project/project/
+project/target/
 
+.settings/
+SpreadSite.iml
+.classpath
+.cache
+.idea_modules/**
+.idea/**

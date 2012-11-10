@@ -6,12 +6,23 @@
 			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
 		</layout>
 	</appender>
+	<appender name="SCRAPER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>scraper.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>scraper.%d{yyyy-MM-dd HH:mm:ss}.gz</fileNamePattern>
+		</rollingPolicy>
+		<append>true</append>
+		<encoder>
+			<pattern>%msg%n</pattern>
+		</encoder>
+	</appender>
 
 	<logger name="net.liftweb" level="off"/>
-	<logger name="net.mutina.bv" level="TRACE"/>
-
-
-	<root level="info">
+	<logger name="net.mutina.bv" level="TRACE">
 		<appender-ref ref="STDOUT" />
-	</root>
+	</logger>
+	<logger name="blocks" level="DEBUG">
+		<appender-ref ref="SCRAPER_FILE" />
+	</logger>
+
 </configuration>
