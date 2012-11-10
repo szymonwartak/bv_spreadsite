@@ -7,9 +7,9 @@
 		</layout>
 	</appender>
 	<appender name="SCRAPER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>scraper.log</file>
+		<file>logs/scraper.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>scraper.%d{yyyy-MM-dd HH:mm:ss}.gz</fileNamePattern>
+			<fileNamePattern>logs/scraper.%d{yyyy-MM-dd}.gz</fileNamePattern>
 		</rollingPolicy>
 		<append>true</append>
 		<encoder>
