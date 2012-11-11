@@ -34,7 +34,8 @@ object MenuInfo {
   val IfLoggedIn = If(() => User.currentUser.isDefined, "You must be logged in")
 
   def menu: List[Menu] = 
-    List[Menu](Menu.i("Home") / "index",
-               Menu.i("Market Spread") / "marketSpread")// >> IfLoggedIn)::: 
-               //User.sitemap.slice(0,2)
+    List[Menu](	Menu.i("SW") / "index",
+               	Menu.i("Market Spread") / "marketSpread",
+								Menu.i("Music") / "music",
+								Menu.i("CV") / "cv")
 }

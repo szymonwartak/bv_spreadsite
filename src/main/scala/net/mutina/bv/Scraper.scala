@@ -45,7 +45,7 @@ class Scraper(currency:String, security:String) extends Actor with Logging {
 			scrapeSpotPrices(pricesUrl)
 			scrapeMarketDepth(marketUrl)
 			marketData = marketData.filter(_.blockDate.after(DateTime.now.minusMinutes(120).toDate))
-			debug("now sleep. marketData size: "+marketData.size+" numThreads: "+Scraper.numThreads)
+//			debug("now sleep. marketData size: "+marketData.size+" numThreads: "+Scraper.numThreads)
 			Thread.sleep(20000)
 		}
 	}

@@ -24,6 +24,7 @@ li.selectedItem { float:left; background-image:url('/images/menubgover.gif'); }
 li.selectedItem { font: 16px bold Arial; }
 li.menuItem { background-image:url('/images/menubg.gif'); }
 li.menuItem:hover { cursor: pointer; }
+ul.menuSection li { margin-left:1px; }
 ul.menuSection li a { font: 16px bold Arial; text-decoration: none; color:#fff; display: block; }
 ul.menuSection li a:hover { color:#000; }
 .handCursor { cursor: pointer; }
@@ -41,12 +42,6 @@ ul.menuSection li a:hover { color:#000; }
   </head>
   <body>
     <div class="container">
-      <div class="column span-23 last" style="text-align: middle">
-        <h1 class="alt">BV++</h1>
-      </div>
-
-      <hr/>
-
       <div class="column span-23">
 	      <lift:Menu.builder ul:class="menuSection" li:class="menuItem"
 	          li_item:id="selectedMenu" li_item:class="selectedItem" li_path:class="parentMenu"/>
@@ -62,14 +57,7 @@ ul.menuSection li a:hover { color:#000; }
 
       <hr />
       <div class="column span-23 last" style="text-align: center">
-        <h4>
-        <a href="http://www.bullionvault.com/#SZYMONWARTAK">Buy gold online - quickly, safely and at low prices @BullionVault</a>
-        </h4>
-        <br/>
-        <h4 class="alt">
-          <a href="http://liftweb.net">
-            <i>lift</i>
-          </a> is Copyright 2007 WorldWide Conferencing, LLC.  Distributed under an Apache 2.0 License.</h4>
+        <h4 class="alt">&copy;Szymon Wartak ... Powered by <a href="http://liftweb.net"><i>Lift</i></a>.</h4>
       </div>
 
     </div>
