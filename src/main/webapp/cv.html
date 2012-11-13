@@ -1,84 +1,163 @@
 <lift:surround with="default" at="content">
+<head>
+<link rel="stylesheet" href="css/jquery-ui.css" />
+<script src="js/jquery-1.8.2.js"></script>
+<script src="js/jquery-ui-1.9.2.js"></script>
 
-<h2>Szymon Wartak</h2>
-firstname.lastname@gmail.com
-<hr/>
+<script type="text/javascript" src="js/cv.js"></script>
+<style>
+div{border:0px solid black; }
+#cv-page-header { overflow-y:auto; }
+#cv-page-body { float:left; overflow-y:scroll; height:500px; }
+.cv-section-head-container { float:left; width:100%; }
+.cv-section-head-container > div { float:left; padding:10px 0 0 10px; text-align:center; }
+.cv-section-head { cursor: pointer; font: 10px Arial; border:1px solid black; text-align: center; height: 20px; margin: 2px 0 0 0; padding-top:10px; width: 150px; }
+.cv-section-head:hover { background-color: #ddd; }
+.cv-section-head-selected { background-color: #ddd; }
+.cv-section-head-container .cv-section-slider-body { width:300px; padding:0; margin:10px 10px 0 10px; }
+.cv-section-head-container .cv-section-slider-begin { width:50px; }
+.cv-section-head-container .cv-section-slider-end { width:50px; }
+/*.cv-header-top { float:left; }*/
+.cv-section-body-container { float:left; width:100%; }
+.cv-section-body-container > div { float:left; margin:10px 0 0 10px; }
+div.clearing { clear:both; margin:0; padding:0; }
+</style>
+</head>
 
+<div id="cv-page-header">
+	<div class="cv-header-top">
+		<h2>Szymon Wartak</h2>
+		firstname.lastname@gmail.com
+	</div>
+	<div class="cv-section-head-container">
+		<div class="cv-section-head" id="cv-section-head-career">Career History</div>
+		<div class="cv-section-slider-begin" id="cv-section-begin-career"></div>
+		<div class="cv-section-slider-body" id="cv-section-slider-career"></div>
+		<div class="cv-section-slider-end" id="cv-section-end-career"></div>
+		<div class="clearing"></div>
+	</div>
+	<div class="cv-section-head-container">
+		<div class="cv-section-head" id="cv-section-head-education">Education</div>
+		<div class="cv-section-slider-begin" id="cv-section-begin-education"></div>
+		<div class="cv-section-slider-body" id="cv-section-slider-education"></div>
+		<div class="cv-section-slider-end" id="cv-section-end-education"></div>
+		<div class="clearing"></div>
+	</div>
+	<div class="cv-section-head-container">
+		<div class="cv-section-head" id="cv-section-head-softies">Some of the softer stuff...</div>
+		<div class="clearing"></div>
+	</div>
+</div>
+	
+<div id="cv-page-body">
+	<div id="cv-page-padding">&nbsp;</div>
+	<div class="cv-section-body-container">
+		<div class="cv-section-body" id="cv-section-body-career">
+		<h3>Career History</h3>
+		<span class="career-entry">
+			Aug <span class="career-entry-start">2012</span>-<span class="career-entry-end">2012</span> - <a href="http://www.visualdna.com/">VisualDNA</a> (R&amp;D and Risk) - Research Engineer - London, United Kingdom
+			<ul>
+				<li>Developing/maintaining realtime risk scorer - Scala (Akka)</li>
+				<li>Data analysis and migration tools - R, Scala</li>
+			</ul>
+		</span>
+		<span class="career-entry">
+			Jul <span class="career-entry-start">2011</span>-Aug <span class="career-entry-end">2012</span> - <a href="http://bullionvault.com/">BullionVault</a> - IT Developer - London, United Kingdom
+			<ul>
+				<li>Designed/prototyped in-page internationalization of web pages with instant search and robust Javascript design patterns using JQuery and custom JSP tags</li>
+				<li>Developed HTML5/Javascript time series data view of market using Scala/Lift</li>
+				<li>Mobile trading and chart data app for Symbian in Qt/C++</li>
+				<li>Updates to website - JSP, JQuery, Spring MVC, Spring Security, Maven and automated Jenkins deployment</li>
+				<li>Introduced/maintained Jenkins CI with PL/Unit and Selenium tests, and Gerrit code review systems</li>
+			</ul>
+		</span>
+		<span class="career-entry">
+			Jan <span class="career-entry-start">2010</span>-Jun <span class="career-entry-end">2011</span> - <a href="http://www.ocado.com/">Ocado Technology</a> (Supply Chain Systems) Software Developer - Hatfield, United Kingdom
+			<ul>
+				<li>Completed external facing greenfield project using J2SE with extensive development in JSP, JMS JQuery, Spring Security, Google Guice, Stripes Framework, Hibernate, Postgresql, Jawr and Maven</li>
+				<li>Migration from legacy supplier maintenance system - Hibernate mapping, PL/SQL export scripts merging heterogeneous data, reverse engineering system for re-export compatibility with existing Java processes</li>
+				<li>Developed supply chain management mobile application</li>
+				<li>Continuous integration of J2SE front end and middleware components into supply chain applications</li>
+			</ul>
+		</span>
+		<span class="career-entry">
+			May-Aug <span class="career-entry-start career-entry-end">2005</span> - DSG Gas Company (Gas Usage Forecasting Project) - Software Developer - Wroclaw, Poland
+			<ul>
+				<li>Implemented automated data analysis and verification methods in C#.NET</li>
+				<li>Data abstraction layer for an analytical database of natural gas usage with C#/ASP.NET</li>
+				<li>Developed stored procedures for data aggregation using SQL Server</li>
+			</ul>
+		</span>
+		<span class="career-entry">
+		Nov <span class="career-entry-start">2004</span>-April <span class="career-entry-end">2005</span> - University of Toronto - Research Assistant - Intelligent Assistive Technology and Systems Lab - Toronto, Canada
+		<ul>
+			<li>Worked on Intelligent Supportive Environments for Older Adults project</li>
+			<li>Developed the communication layer between statistical decision and computer vision subsystems with multithreaded dispatching and application state management (C++, Visual Basic)</li>
+		</ul>
+		</span>
+		<span class="career-entry">
+		Jan-May <span class="career-entry-start career-entry-end">2003</span> - CME Telemetrix (now NIR Diagnostics)- Data Analyst - Photonics Division - Waterloo, Canada
+		<ul>
+			<li>Analyzed time series spectral data of biological molecules to determine baseline values used in spectral measurements of blood glucose (Matlab) on spectral data acquisition software (LabVIEW)</li>
+			<li>Developed file handling and data aggregating productivity applications in J2SE</li>
+		</ul>
+		</span>
+		<span class="career-entry">
+		Sept <span class="career-entry-start">2001</span>-Aug <span class="career-entry-end">2002</span> - VTT Electronics - Research Trainee - Software Architectures and Design - Oulu, Finland
+		<ul>
+			<li>Developed Core Java system for application testing through Java Beans using reflection and RMI</li>
+			<li>Implemented J2SE client/server media application with structured Resource Management</li>
+			<li>Researched suitability of XML for resource and security policy descriptions in distributed systems</li>
+		</ul>
+		</span>
+		<span class="career-entry">
+		Jan-Apr <span class="career-entry-start career-entry-end">2001</span> - Open Text Corporation - Software Developer - New Projects Group - Waterloo, Canada
+		<ul>
+			<li>Developed frontend for web-based hyperlink service using DHTML and XML/XSL and key backend queries in Oracle PL/SQL</li>
+		</ul>
+		</span>
+		</div>
+	</div>
 
-<h3>Career History</h3>
-Aug 2012-present - <a href="http://www.visualdna.com/">VisualDNA</a> (R&amp;D and Risk) - Research Engineer - London, United Kingdom
-<ul>
-	<li>Developing/maintaining realtime risk scorer - Scala (Akka)</li>
-	<li>Data analysis and migration tools - R, Scala</li>
-</ul>
-Jul 2011-Aug 2012 - <a href="http://bullionvault.com/">BullionVault</a> - IT Developer - London, United Kingdom
-<ul>
-	<li>Designed/prototyped in-page internationalization of web pages with instant search and robust Javascript design patterns using JQuery and custom JSP tags</li>
-	<li>Developed HTML5/Javascript time series data view of market using Scala/Lift</li>
-	<li>Mobile trading and chart data app for Symbian in Qt/C++</li>
-	<li>Updates to website - JSP, JQuery, Spring MVC, Spring Security, Maven and automated Jenkins deployment</li>
-	<li>Introduced/maintained Jenkins CI with PL/Unit and Selenium tests, and Gerrit code review systems</li>
-</ul>
-Jan 2010-Jun 2011 - Ocado Technology (Supply Chain Systems) Software Developer - Hatfield, United Kingdom
-<ul>
-	<li>Completed external facing greenfield project using J2SE with extensive development in JSP, JMS JQuery, Spring Security, Google Guice, Stripes Framework, Hibernate, Postgresql, Jawr and Maven</li>
-	<li>Migration from legacy supplier maintenance system - Hibernate mapping, PL/SQL export scripts merging heterogeneous data, reverse engineering system for re-export compatibility with existing Java processes</li>
-	<li>Developed supply chain management mobile application</li>
-	<li>Continuous integration of J2SE front end and middleware components into supply chain applications</li>
-</ul>
-May-Aug 2005 - DSG Gas Company (Gas Usage Forecasting Project) - Software Developer - Wroclaw, Poland
-<ul>
-	<li>Implemented automated data analysis and verification methods in C#.NET</li>
-	<li>Data abstraction layer for an analytical database of natural gas usage with C#/ASP.NET</li>
-	<li>Developed stored procedures for data aggregation using SQL Server</li>
-</ul>
-Nov 2004-April 2005 - University of Toronto - Research Assistant - Intelligent Assistive Technology and Systems Lab - Toronto, Canada
-<ul>
-	<li>Worked on Intelligent Supportive Environments for Older Adults project</li>
-	<li>Developed the communication layer between statistical decision and computer vision subsystems with multithreaded dispatching and application state management (C++, Visual Basic)</li>
-</ul>
-Jan-May 2003 - CME Telemetrix (now NIR Diagnostics)- Data Analyst - Photonics Division - Waterloo, Canada
-<ul>
-	<li>Analyzed time series spectral data of biological molecules to determine baseline values used in spectral measurements of blood glucose (Matlab) on spectral data acquisition software (LabVIEW)</li>
-	<li>Developed file handling and data aggregating productivity applications in J2SE</li>
-</ul>
-Sept 2001-Aug 2002 - VTT Electronics - Research Trainee - Software Architectures and Design - Oulu, Finland
-<ul>
-	<li>Developed Core Java system for application testing through Java Beans using reflection and RMI</li>
-	<li>Implemented J2SE client/server media application with structured Resource Management</li>
-	<li>Researched suitability of XML for resource and security policy descriptions in distributed systems</li>
-</ul>
-Jan-Apr 2001 - Open Text Corporation - Software Developer - New Projects Group - Waterloo, Canada
-<ul>
-	<li>Developed frontend for web-based hyperlink service using DHTML and XML/XSL and key backend queries in Oracle PL/SQL</li>
-</ul>
+	<div class="cv-section-body-container">
+		<div class="cv-section-body" id="cv-section-body-education">
+			<h3>Education</h3>
+			<span class="education-entry">
+			<span class="education-entry-start">2008</span>-<span class="education-entry-end">2009</span> - University of York - MSc by research (Computer Science) - York, United Kingdom
+			<ul>
+				<li>Thesis project: Matlab and C++. 1) Feature extraction using nonlinear dimensionality reduction algorithms. 2) Optical flow estimation with linear and nonlinear smoothing</li>
+				<li>IEEE Student Member: Web Design, Industrial Liaison, Publicity Officer for IEEE Branch</li>
+				<li>ORS Scholarship (£9,000)</li>
+			</ul>
+			</span>
+			<span class="education-entry">
+			<span class="education-entry-start">2006</span>-<span class="education-entry-end">2008</span> - University of Waterloo - MA by research (Psychology) - Waterloo, Canada
+			<ul>
+				<li>Thesis project: Experiments and modeling of shape-from-motion in Java.</li>
+				<li>Modules: Statistical Classification, Neurobiological Simulations (Neural Networks)</li>
+				<li>University of Waterloo Scholarship ($10,000), course avg = 86%</li>
+			</ul>
+			</span>
+			<span class="education-entry">
+			<span class="education-entry-start">2000</span>-<span class="education-entry-end">2006</span> - University of Waterloo - Bachelor of Computer Science (Honours) - Waterloo, Canada
+			<ul>
+				<li>Selected Modules: Distributed Systems, AI, Statistical Computing, Software Engineering</li>
+				<li>Aiming For The Top Entrance Scholarship ($2,500), course avg = 78%</li>
+			</ul>
+			</span>
+		</div>
+	</div>
 
-
-<h3>Education</h3>
-2008-2009 - University of York - MSc by research (Computer Science) - York, United Kingdom
-<ul>
-	<li>Thesis project: Matlab and C++. 1) Feature extraction using nonlinear dimensionality reduction algorithms. 2) Optical flow estimation with linear and nonlinear smoothing</li>
-	<li>IEEE Student Member: Web Design, Industrial Liaison, Publicity Officer for IEEE Branch</li>
-	<li>ORS Scholarship (£9,000)</li>
-</ul>
-2006-2008 - University of Waterloo - MA by research (Psychology) - Waterloo, Canada
-<ul>
-	<li>Thesis project: Experiments and modeling of shape-from-motion in Java.</li>
-	<li>Modules: Statistical Classification, Neurobiological Simulations (Neural Networks)</li>
-	<li>University of Waterloo Scholarship ($10,000), course avg = 86%</li>
-</ul>
-2000-2006 - University of Waterloo - Bachelor of Computer Science (Honours) - Waterloo, Canada
-<ul>
-	<li>Selected Modules: Distributed Systems, AI, Statistical Computing, Software Engineering</li>
-	<li>Aiming For The Top Entrance Scholarship ($2,500), course avg = 78%</li>
-</ul>
-
-
-<h3>Some of the softer stuff...</h3>
-<ul>
-	<li>Leadership: Co-organized 1st IEEE York Project Festival, Research Students Representative (U of York); Founder of Judo Club (U of Waterloo); Council, Personnel Manager of orchestra@uwaterloo</li>
-	<li>Languages: English, Polish, French, Finnish</li>
-	<li>Hobbies &amp; Interests: rock climbing, squash, cycling, running, yoga, all things software</li>
-</ul>
+	<div class="cv-section-body-container">
+		<div class="cv-section-body" id="cv-section-body-softies">
+		<h3>Some of the softer stuff...</h3>
+		<ul>
+			<li>Leadership: Co-organized 1st IEEE York Project Festival, Research Students Representative (U of York); Founder of Judo Club (U of Waterloo); Council, Personnel Manager of orchestra@uwaterloo</li>
+			<li>Languages: English, Polish, French, Finnish</li>
+			<li>Hobbies &amp; Interests: rock climbing, squash, cycling, running, yoga, all things software</li>
+		</ul>
+		</div>
+	</div>
+</div>
 
 </lift:surround>

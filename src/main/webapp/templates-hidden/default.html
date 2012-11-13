@@ -11,15 +11,11 @@
     <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
     <style>
   /* <![CDATA[ */
-
+	body { margin:20px 0; }
+	#site-footer { text-align:center; padding-top:10px; }
 /* menu styles */
 ul.menuSection { list-style-type: none; height: 0px; }
-ul.menuSection li {
-  float: left;
-  height:24px;
-  padding: 5px 10px;
-  background-repeat: none;
-}
+ul.menuSection li { float: left; height:24px; padding: 5px 10px; background-repeat: none; }
 li.selectedItem { float:left; background-image:url('/images/menubgover.gif'); }
 li.selectedItem { font: 16px bold Arial; }
 li.menuItem { background-image:url('/images/menubg.gif'); }
@@ -42,21 +38,17 @@ ul.menuSection li a:hover { color:#000; }
   </head>
   <body>
     <div class="container">
-      <div class="column span-23">
+      <div id="site-header" class="column span-23">
 	      <lift:Menu.builder ul:class="menuSection" li:class="menuItem"
 	          li_item:id="selectedMenu" li_item:class="selectedItem" li_path:class="parentMenu"/>
       </div>
 
-      <div class="column span-23 last">
-        <div>
-          <lift:snippet type="msgs"/>
-          <hr class="space" />
-        </div>
-        <lift:bind name="content" />
+      <div id="site-body" class="column span-23 last">
+				<lift:snippet type="msgs"/>
+				<lift:bind name="content" />
       </div>
 
-      <hr />
-      <div class="column span-23 last" style="text-align: center">
+      <div id="site-footer" class="column span-23 last">
         <h4 class="alt">&copy;Szymon Wartak ... Powered by <a href="http://liftweb.net"><i>Lift</i></a>.</h4>
       </div>
 
